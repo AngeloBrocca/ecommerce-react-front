@@ -15,6 +15,8 @@ import {
   Box,
 } from "@mui/material";
 
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+
 import { useNavigate } from "react-router-dom";
 
 export default function Products() {
@@ -25,6 +27,32 @@ export default function Products() {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const navigate = useNavigate();
+
+  async function addToCart(productId) {
+
+    try {
+
+      await api.post(
+        "/cart/",
+        {
+          product: productId,
+          quantity: 1
+        }
+      );
+
+      alert(
+        "Produto adicionado ao carrinho!"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Erro ao adicionar ao carrinho"
+      );
+    }
+  }
 
   async function loadProducts() {
     const response = await api.get(
@@ -125,26 +153,46 @@ export default function Products() {
         <Box
           sx={{
             display: "flex",
-            gap: 2,
+            justifyContent: "space-between",
             mb: 3,
-            alignItems: "center",
           }}
         >
-          <Button
-            variant="contained"
-            onClick={handleSearch}
+
+          <Box
+            sx={{
+              display: "flex",
+              gap: 2
+            }}
           >
-            Buscar
-          </Button>
+
+            <Button
+              variant="contained"
+              onClick={handleSearch}
+            >
+              Buscar
+            </Button>
+
+            <Button
+              variant="contained"
+              onClick={() =>
+                navigate("/products/new")
+              }
+            >
+              Novo Produto
+            </Button>
+
+          </Box>
 
           <Button
-            variant="contained"
+            variant="outlined"
+            startIcon={<ShoppingCartIcon />}
             onClick={() =>
-              navigate("/products/new")
+              navigate("/cart")
             }
           >
-            Novo Produto
+            Carrinho
           </Button>
+
         </Box>
 
         {products.map(product => (
@@ -177,27 +225,46 @@ export default function Products() {
                 )}
               </Typography>
 
-              <Button
-                sx={{ mr: 2 }}
-                variant="outlined"
-                onClick={() =>
-                  navigate(
-                    `/products/edit/${product.id}`
-                  )
-                }
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                  mt: 2
+                }}
               >
-                Editar
-              </Button>
 
-              <Button
-                color="error"
-                variant="contained"
-                onClick={() =>
-                  deleteProduct(product.id)
-                }
-              >
-                Excluir
-              </Button>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={() =>
+                    addToCart(product.id)
+                  }
+                >
+                  Adicionar ao Carrinho
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  onClick={() =>
+                    navigate(
+                      `/products/edit/${product.id}`
+                    )
+                  }
+                >
+                  Editar
+                </Button>
+
+                <Button
+                  color="error"
+                  variant="contained"
+                  onClick={() =>
+                    deleteProduct(product.id)
+                  }
+                >
+                  Excluir
+                </Button>
+
+              </Box>
 
             </CardContent>
           </Card>

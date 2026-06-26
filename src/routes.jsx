@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
 import ProductForm from "./pages/ProductForm";
+import Cart from "./pages/Cart";
 
 export default function AppRoutes() {
 
@@ -29,6 +30,11 @@ export default function AppRoutes() {
         <Route
           path="/products/edit/:id"
           element={<ProductForm />}
+        />
+
+        <Route
+          path="/cart"
+          element={<Cart />}
         />
 
       </Routes>
